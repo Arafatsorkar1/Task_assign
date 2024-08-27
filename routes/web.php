@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Route::get('/ ',[\App\Http\Controllers\DashboardController::class,'login'])->name('login');
 
 Route::middleware([
     'auth:sanctum',
@@ -20,4 +21,6 @@ Route::middleware([
     'verified'
 ])->group(function () {
           Route::get('/',[\App\Http\Controllers\DashboardController::class,'dashboard'])->name('dashboard');
+          Route::resource('tasks', \App\Http\Controllers\TaskAssignController::class);
+
 });
