@@ -22,5 +22,7 @@ Route::middleware([
 ])->group(function () {
           Route::get('/',[\App\Http\Controllers\DashboardController::class,'dashboard'])->name('dashboard');
           Route::resource('tasks', \App\Http\Controllers\TaskAssignController::class);
+           Route::get('/tasks/{id}', [\App\Http\Controllers\TaskAssignController::class, 'showM'])->name('tasks.show');
+
 
 });

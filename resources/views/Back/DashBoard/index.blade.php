@@ -5,7 +5,7 @@
     /* Modal container */
     .modal {
 
-        position: fixed;
+        position: absolute;
         z-index: 1;
         left: 0;
         top: 0;
@@ -24,6 +24,7 @@
         padding: 20px;
         border: 1px solid #888;
         width: 80%;
+        overflow: scroll;
         max-width: 500px;
         border-radius: 8px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -98,8 +99,14 @@
         box-sizing: border-box;
     }
 
+    .modal-backdrop.show, .show.blockOverlay {
+        opacity: .01!important;
+    }
+
 
 </style>
+
+
 @section('body')
     <div class="app-page-title">
         <div class="page-title-wrapper">
@@ -113,26 +120,15 @@
                 </div>
             </div>
             <div class="page-title-actions">
-                <button type="button" data-toggle="tooltip" title="Example Tooltip" data-placement="bottom" class="btn-shadow mr-3 btn btn-dark">
+                <button type="button" data-toggle="tooltip" title="Example Tooltip" data-placement="bottom"
+                        class="btn-shadow mr-3 btn btn-dark">
                     <i class="fa fa-star"></i>
                 </button>
                 <div class="d-inline-block dropdown">
-{{--                    <a href="  " class="btn-shadow dropdown-toggle btn btn-info">--}}
-{{--                         <span class="btn-icon-wrapper pr-2 opacity-7">--}}
-{{--                           <i class="fa fa-business-time fa-w-20"></i>--}}
-{{--                         </span>--}}
-{{--                        Create--}}
-{{--                    </a>--}}
 
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customModal">
-                        <span class="btn-icon-wrapper pr-2 opacity-7">
-                           <i class="fa fa-business-time fa-w-20"></i>
-                         </span>
-                        Create
-                    </button>
 
                     <!-- Button to Open the Modal -->
-                    <button id="openModalBtn" class="btn btn-primary">Launch demo modal</button>
+                    <button id="openModalBtn" class="btn btn-primary">Create</button>
 
                     <!-- The Modal -->
 
@@ -151,7 +147,8 @@
 
 
                     <hr>
-                    <table style="width: 100%;" id="example" class="table table-hover table-striped table-bordered mt-3">
+                    <table style="width: 100%;" id="example"
+                           class="table table-hover table-striped table-bordered mt-3">
                         <thead>
                         <tr style="text-align: center">
                             <th width="5%">Serial</th>
@@ -159,7 +156,7 @@
                             <th width="20%">Duration</th>
 
                             <th width="20%">Status</th>
-                            <th width="10%">Action</th>
+                            <th width="15%">Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -168,19 +165,57 @@
                                 <td style="text-align: center">{{$loop->iteration}}</td>
                                 <td style="text-align: center">{{$task->title}}</td>
                                 <td style="text-align: center">{{$task->due_date}}</td>
-<td></td>
+                                <td style="text-align: center">
+                                    @if($task->status == 3)
+                                  <span class="ml-auto badge badge-success">Completed</span>
+                                    @elseif($task->status == 2)
+                                        <span class="ml-auto badge badge-primary">In Progress</span>
+                                    @elseif($task->status == 1)
+                                        <span class="ml-auto badge badge-info">Pending</span>
+                                    @else
+                                        <span class="ml-auto badge badge-danger">Ready</span>
+                                    @endif
 
-                                <td>
-                                    <a href="{{route('tasks.edit',$task->id)}}" class="btn btn-success">
+                                </td>
+
+                                <td class="">
+
+
+
+                                    <div class="dropdown pull-left mr-2">
+                                        <a href="#" class="dropdown-toggle  btn-sm btn-primary" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                            <li><a class="dropdown-item" href="#">Pending</a></li>
+                                            <li><a class="dropdown-item" href="#">In Progress</a></li>
+                                            <li><a class="dropdown-item" href="#">Completed</a></li>
+                                        </ul>
+                                    </div>
+
+
+
+                                    <a href="{{route('tasks.edit',$task->id)}}" class="btn btn-sm btn-success">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <a href="{{route('tasks.edit',$task->id)}}" class="btn btn-success">
+                                    <a href="javascript:void(0);"
+                                       title="{!! $task->description ?? '' !!}"
+                                       class="btn btn-success btn-sm view-details"
+                                       data-id="{{ $task->id }}"
+                                       data-description="{{ $task->description }}"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#taskModal">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a href="javascript:void(0)" onclick="confirmDelete({{$task->id}})" class="btn btn-danger btn-sm">
+
+
+                                    <a href="javascript:void(0)" onclick="confirmDelete({{$task->id}})"
+                                       class="  btn-danger btn-sm">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
-                                    <form id="confirmDelete{{$task->id}}" action="{{route('tasks.destroy',$task->id) }}" method="post">
+                                    <form id="confirmDelete{{$task->id}}" action="{{route('tasks.destroy',$task->id) }}"
+                                          method="post">
                                         @csrf
                                         @method('delete')
                                     </form>
@@ -200,16 +235,15 @@
 
     <div id="customModal" class="modal">
         <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
+             <div class="modal-header">
                 <h5 class="modal-title">Add New Task</h5>
                 <span id="closeModalBtn" class="close">&times;</span>
             </div>
 
-            <!-- Modal Body -->
-            <div class="modal-body">
+             <div class="modal-body">
                 <form id="taskForm" action="{{route('tasks.store')}}" method="post" enctype="multipart/form-data">
                     @csrf
+
                     <div class="mb-3">
                         <label for="taskTitle" class="form-label">Title</label>
                         <input type="text" id="taskTitle" name="title" placeholder="Enter task title" required>
@@ -220,45 +254,80 @@
                     </div>
                     <div class="mb-3">
                         <label for="taskDescription" class="form-label">Description</label>
-                        <textarea id="taskDescription" name="description" rows="3" placeholder="Enter task description" required></textarea>
+                        <textarea id=" " name="description" rows="3" placeholder="Enter task description"
+                                  required></textarea>
                     </div>
                 </form>
             </div>
 
-            <!-- Modal Footer -->
-            <div class="modal-footer">
+             <div class="modal-footer">
                 <button type="button" id="closeModalFooterBtn" class="btn-secondary">Close</button>
                 <button type="submit" form="taskForm" class="btn-primary">Save Task</button>
             </div>
         </div>
     </div>
 
+         <div id="taskModal" class="modal">
+        <div class=" ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModalLabel">Task Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                 </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeModalFooterBtn" class="btn-secondary">Close</button> </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
     <script>
-        // Get the modal, open button, and close button elements
+
+
+
+
+    CKEDITOR.replace('editor');
+
+
         var modal = document.getElementById("customModal");
         var openModalBtn = document.getElementById("openModalBtn");
         var closeModalBtn = document.getElementById("closeModalBtn");
         var closeModalFooterBtn = document.getElementById("closeModalFooterBtn");
 
-        // When the user clicks the button, open the modal
-        openModalBtn.onclick = function() {
+         openModalBtn.onclick = function () {
             modal.style.display = "block";
         }
 
-        // When the user clicks on <span> (x) or the close button, close the modal
-        closeModalBtn.onclick = function() {
+         closeModalBtn.onclick = function () {
             modal.style.display = "none";
         }
-        closeModalFooterBtn.onclick = function() {
+        closeModalFooterBtn.onclick = function () {
             modal.style.display = "none";
         }
 
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
+         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.view-details').forEach(button => {
+            button.addEventListener('click', function () {
+                const description = this.getAttribute('data-description') || 'No description available';
+                const modalBody = document.querySelector('#taskModal .modal-body');
+                modalBody.innerHTML = `
+                <p><strong>Description:</strong></p>
+                <p>${description}</p>
+            `;
+            });
+        });
+    });
 
     </script>
 @endsection
