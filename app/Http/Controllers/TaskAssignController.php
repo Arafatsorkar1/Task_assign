@@ -42,6 +42,34 @@ class TaskAssignController extends Controller
         return response()->json($task);
     }
 
+    public  function pending($id)
+    {
+        $task = Task::findOrFail($id)->update(['status'=> 1]);
+        return redirect()->back()->with('message','Task Assign   Pending');
+
+    }
+
+    public  function progress($id)
+    {
+        $task = Task::findOrFail($id)->update(['status'=> 2]);
+        return redirect()->back()->with('message','Task Assign   Progress');
+
+    }
+
+    public  function completed($id)
+    {
+        $task = Task::findOrFail($id)->update(['status'=> 3]);
+        return redirect()->back()->with('message','Task Assign   Completed');
+
+    }
+
+    public  function ready($id)
+    {
+        $task = Task::findOrFail($id)->update(['status'=> 0]);
+        return redirect()->back()->with('message','Task Assign   Ready');
+
+    }
+
 
 
 

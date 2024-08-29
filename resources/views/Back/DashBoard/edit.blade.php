@@ -158,11 +158,11 @@
                                         <div class="col-md-8">
 
                                             <select  name="status" class="form-control">
-                                                <option value="option2">Select</option>
+                                                <option>Select</option>
                                                 <option value="0" {{$task->status == 0 ? 'selected' : ''}}> Ready </option>
                                                 <option value="1" {{$task->status == 1 ? 'selected' : ''}}> Pending </option>
-                                                <option value="3" {{$task->status == 2 ? 'selected' : ''}}> In Progress </option>
-                                                <option value="4" {{$task->status == 3 ? 'selected' : ''}}> Completed </option>
+                                                <option value="2" {{$task->status == 2 ? 'selected' : ''}}> In Progress </option>
+                                                <option value="3" {{$task->status == 3 ? 'selected' : ''}}> Completed </option>
                                             </select>
 
                                         </div>

@@ -20,9 +20,13 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-          Route::get('/',[\App\Http\Controllers\DashboardController::class,'dashboard'])->name('dashboard');
-          Route::resource('tasks', \App\Http\Controllers\TaskAssignController::class);
-           Route::get('/tasks/{id}', [\App\Http\Controllers\TaskAssignController::class, 'showM'])->name('tasks.show');
+           Route::get('/',[\App\Http\Controllers\DashboardController::class,'dashboard'])->name('dashboard');
+           Route::resource('tasks', \App\Http\Controllers\TaskAssignController::class);
+           Route::get('/tasks/{id}',     [\App\Http\Controllers\TaskAssignController::class, 'showM'])->name('tasks.show');
+           Route::get('/pending/{id}',   [\App\Http\Controllers\TaskAssignController::class, 'pending'])->name('pending');
+           Route::get('/progress/{id}',  [\App\Http\Controllers\TaskAssignController::class, 'progress'])->name('progress');
+           Route::get('/completed/{id}', [\App\Http\Controllers\TaskAssignController::class, 'completed'])->name('completed');
+           Route::get('/ready/{id}',     [\App\Http\Controllers\TaskAssignController::class, 'ready'])->name('ready');
 
 
 });

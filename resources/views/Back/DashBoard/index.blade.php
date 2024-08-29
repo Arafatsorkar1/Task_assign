@@ -169,7 +169,7 @@
                                     @if($task->status == 3)
                                   <span class="ml-auto badge badge-success">Completed</span>
                                     @elseif($task->status == 2)
-                                        <span class="ml-auto badge badge-primary">In Progress</span>
+                                        <span class="ml-auto badge badge-dark">In Progress</span>
                                     @elseif($task->status == 1)
                                         <span class="ml-auto badge badge-info">Pending</span>
                                     @else
@@ -188,9 +188,10 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-                                            <li><a class="dropdown-item" href="#">Pending</a></li>
-                                            <li><a class="dropdown-item" href="#">In Progress</a></li>
-                                            <li><a class="dropdown-item" href="#">Completed</a></li>
+                                            <li><a class="dropdown-item btn btn-sm btn-info" href="{{route('pending',$task->id)}}"  >Pending</a></li>
+                                            <li ><a class="dropdown-item btn btn-sm btn-dark" href="{{route('progress',$task->id)}}">Progress</a></li>
+                                            <li><a class="dropdown-item btn btn-sm btn-success" href="{{route('completed',$task->id)}}">Completed</a></li>
+                                            <li><a class="dropdown-item btn btn-sm btn-danger" href="{{route('ready',$task->id)}}">Ready</a></li>
                                         </ul>
                                     </div>
 
